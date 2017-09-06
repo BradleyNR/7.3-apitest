@@ -26,9 +26,12 @@ passport.use(new BasicStrategy((username, password, done) => {
   });
 }));
 
-app.get('/', passport.authenticate(['anonymous', 'basic'], {session: false}), userController.detail);
-app.get('/animals', animalController.list);
+app.get('/', passport.authenticate(['basic', 'anonymous'], {session: false}), userController.detail);
+app.get('/animals', passport.authenticate(['basic', 'anonymous'], {session: false}), animalController.list);
 app.get('/animals/:id', animalController.detail);
+app.post('/users', userController.create);
 app.post('/animals', animalController.create);
+//lets a user associate themselves with an animal
+app.post('/animals/:id/adopt', passport.authenticate('basic', {session: false}), animalController.adopt);
 
 app.listen(3000);

@@ -4,9 +4,11 @@ const models = require('../models');
 module.exports = {
   list: (req, res) => {
     //req.query is an object that pulls from the request URL, such as ?isAggressive=true&isWearingHat=false
-    console.log(req.query);
+    let searchParams = req.query;
+    //sets the userId to null, so only show animals with null
+    searchParams.userId = null;
     models.Animal.findAll({
-      where: req.query
+      where: searchParams
     }).then((animals) => {
       res.json(animals);
     });
@@ -25,6 +27,15 @@ module.exports = {
       species: req.body.species
     }).then((results) => {
       res.json(results);
+    });
+  },
+  //sets animal foreign key equal to user id to 'adopt' and associate
+  adopt: (req, res) => {
+    models.Animal.findById(req.params.id).then((animal) => {
+      animal.userId = req.user.id;
+      animal.save().then((result) => {
+        res.json(result);
+      });
     });
   }
 }
