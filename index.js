@@ -8,7 +8,9 @@ const app = express();
 
 app.use(bodyParser.json());
 
+
 app.get('/animals', animalController.list);
+app.get('/animals/:id', animalController.detail);
 app.post('/animals', animalController.create);
 
 app.listen(3000);
